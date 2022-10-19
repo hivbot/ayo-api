@@ -1,0 +1,18 @@
+{
+  "name": "voiceflow-whatsapp",
+  "image": "heroku/nodejs",
+  "env": {
+    "WHATSAPP_TOKEN": {
+      "value": ""
+    },
+    "VERIFY_TOKEN": {
+      "value": "voiceflow"
+    },
+    "VF_PROJECT_API": {
+      "value": ""
+    },
+    "VF_PROJECT_VERSION": {
+      "value": ""
+    }
+  }
+}
