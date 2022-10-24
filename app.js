@@ -338,6 +338,7 @@ async function interact(user_id, request, phone_number_id, user_name) {
 }
 
 async function sendMessage(messages, phone_number_id, from) {
+  from = decrypt(from);
   for (let j = 0; j < messages.length; j++) {
     let data
     let ignore = null
