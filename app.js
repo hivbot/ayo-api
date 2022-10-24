@@ -454,7 +454,6 @@ const { createCipheriv, createDecipheriv, scryptSync } = require('crypto');
 const key = scryptSync(process.env.KEY, "salt", 32);
 const iv = scryptSync(process.env.KEY, "salt", 16);
 
-
 function encrypt(data) {
   const cipher = createCipheriv('AES-256-CBC', key, iv);
   return cipher.update(data, 'utf8', 'hex') + cipher.final('hex');
