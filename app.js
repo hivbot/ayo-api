@@ -44,10 +44,11 @@ app.post('/webhook', async (req, res) => {
     if (isNotInteractive) {
       let phone_number_id =
         req.body.entry[0].changes[0].value.metadata.phone_number_id
-      phone_number_id = encrypt(phone_number_id);
       user_id = req.body.entry[0].changes[0].value.messages[0].from // extract the phone number from the webhook payload
+      user_id = encrypt(user_id);
       let user_name =
         req.body.entry[0].changes[0].value.contacts[0].profile.name
+      user_name = encrypt(user_name);
       if (req.body.entry[0].changes[0].value.messages[0].text) {
         await interact(
           user_id,
@@ -337,7 +338,6 @@ async function interact(user_id, request, phone_number_id, user_name) {
 }
 
 async function sendMessage(messages, phone_number_id, from) {
-  phone_number_id = decrypt(phone_number_id);
   for (let j = 0; j < messages.length; j++) {
     let data
     let ignore = null
@@ -463,3 +463,18 @@ function decrypt(data) {
   const decipher = createDecipheriv('AES-256-CBC', key, iv);
   return decipher.update(data, 'hex', 'utf8') + decipher.final('utf8');
 }
+
+app.delete('/state/user/:userID', function (req, res) {
+  res = axios({
+    method: 'DELETE',
+    url: `https://general-runtime.voiceflow.com/state/user/${encodeURI(
+      decrypt(req.user_id)
+    )}`,
+    headers: {
+      Authorization: api,
+      'Content-Type': 'application/json',
+      versionID: version,
+      sessionID: session,
+    }
+  })
+});
