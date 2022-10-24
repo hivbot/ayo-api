@@ -44,6 +44,7 @@ app.post('/webhook', async (req, res) => {
     if (isNotInteractive) {
       let phone_number_id =
         req.body.entry[0].changes[0].value.metadata.phone_number_id
+      phone_number_id = encrypt(phone_number_id);
       user_id = req.body.entry[0].changes[0].value.messages[0].from // extract the phone number from the webhook payload
       let user_name =
         req.body.entry[0].changes[0].value.contacts[0].profile.name
@@ -336,6 +337,7 @@ async function interact(user_id, request, phone_number_id, user_name) {
 }
 
 async function sendMessage(messages, phone_number_id, from) {
+  phone_number_id = decrypt(phone_number_id);
   for (let j = 0; j < messages.length; j++) {
     let data
     let ignore = null
@@ -444,4 +446,20 @@ var rndID = function () {
   weekday[6] = 'Saturday'
   var day = weekday[date.getDay()]
   return randomNo + day + timestamp
+}
+
+const { createCipheriv, createDecipheriv, scryptSync } = require('crypto');
+
+const key = scryptSync(process.env.KEY, "salt", 32);
+const iv = scryptSync(process.env.KEY, "salt", 16);
+
+
+function encrypt(data) {
+  const cipher = createCipheriv('AES-256-CBC', key, iv);
+  return cipher.update(data, 'utf8', 'hex') + cipher.final('hex');
+}
+
+function decrypt(data) {
+  const decipher = createDecipheriv('AES-256-CBC', key, iv);
+  return decipher.update(data, 'hex', 'utf8') + decipher.final('utf8');
 }

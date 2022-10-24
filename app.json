@@ -13,6 +13,9 @@
     },
     "VF_PROJECT_VERSION": {
       "value": "production"
+    },
+    "KEY": {
+      "generator": "secret"
     }
   }
 }
