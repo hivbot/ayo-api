@@ -50,6 +50,10 @@ app.post('/webhook', async (req, res) => {
         req.body.entry[0].changes[0].value.contacts[0].profile.name
       user_name = encrypt(user_name);
       if (req.body.entry[0].changes[0].value.messages[0].text) {
+        if(req.body.entry[0].changes[0].value.messages[0].text.startsWith("/restart")){
+          deleteUserState(user_id);
+          return res.status(200).json({ message: 'ok, we start again' });
+        }
         await interact(
           user_id,
           {
@@ -476,13 +480,11 @@ function deleteUserState(userID) {
       versionID: version
     }
   })
-    .then(function (response) {
-      console.log(response)
-      return response
-    })
     .catch(function (err) {
       console.log(err)
+      return "not deleted";
     })
+  return "deleted";
 }
 
 app.delete('/state/user/:userID', function (req, res) {
