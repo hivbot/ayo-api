@@ -50,7 +50,7 @@ app.post('/webhook', async (req, res) => {
         req.body.entry[0].changes[0].value.contacts[0].profile.name
       user_name = encrypt(user_name);
       if (req.body.entry[0].changes[0].value.messages[0].text) {
-        if(req.body.entry[0].changes[0].value.messages[0].text.startsWith("/restart")){
+        if(req.body.entry[0].changes[0].value.messages[0].text.body.startsWith("/restart")){
           deleteUserState(user_id);
           return res.status(200).json({ message: 'ok, we start again' });
         }
