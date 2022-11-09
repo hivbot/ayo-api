@@ -468,7 +468,7 @@ app.delete('/state/user/:userID', function (req, res) {
   res = axios({
     method: 'DELETE',
     url: `https://general-runtime.voiceflow.com/state/user/${encodeURI(
-      decrypt(req.params.userID)
+      encrypt(req.params.userID)
     )}`,
     headers: {
       Authorization: api,
