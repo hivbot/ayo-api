@@ -464,8 +464,8 @@ function decrypt(data) {
   return decipher.update(data, 'hex', 'utf8') + decipher.final('utf8');
 }
 
-app.delete('/state/user/:userID', function (req, res) {
-  res = axios({
+async function deleteUserState(userID) {
+  await axios({
     method: 'DELETE',
     url: `https://general-runtime.voiceflow.com/state/user/${encodeURI(
       encrypt(req.params.userID)
@@ -476,4 +476,14 @@ app.delete('/state/user/:userID', function (req, res) {
       versionID: version
     }
   })
+    .then(function (response) {
+      return response
+    })
+    .catch(function (err) {
+      console.log(err)
+    })
+}
+
+app.delete('/state/user/:userID', function (req, res) {
+  res = deleteUserState(req.params.userID);
 });
