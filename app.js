@@ -473,8 +473,7 @@ app.delete('/state/user/:userID', function (req, res) {
     headers: {
       Authorization: api,
       'Content-Type': 'application/json',
-      versionID: version,
-      sessionID: session,
+      versionID: version
     }
   })
 });
