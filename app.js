@@ -464,8 +464,8 @@ function decrypt(data) {
   return decipher.update(data, 'hex', 'utf8') + decipher.final('utf8');
 }
 
-async function deleteUserState(userID) {
-  await axios({
+function deleteUserState(userID) {
+  axios({
     method: 'DELETE',
     url: `https://general-runtime.voiceflow.com/state/user/${encodeURI(
       userID
@@ -477,6 +477,7 @@ async function deleteUserState(userID) {
     }
   })
     .then(function (response) {
+      console.log(response)
       return response
     })
     .catch(function (err) {
