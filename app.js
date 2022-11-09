@@ -468,7 +468,7 @@ async function deleteUserState(userID) {
   await axios({
     method: 'DELETE',
     url: `https://general-runtime.voiceflow.com/state/user/${encodeURI(
-      encrypt(req.params.userID)
+      userID
     )}`,
     headers: {
       Authorization: api,
@@ -485,5 +485,5 @@ async function deleteUserState(userID) {
 }
 
 app.delete('/state/user/:userID', function (req, res) {
-  res = deleteUserState(req.params.userID);
+  res = deleteUserState(encrypt(req.params.userID));
 });
