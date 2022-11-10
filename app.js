@@ -54,15 +54,28 @@ app.post('/webhook', async (req, res) => {
           deleteUserState(user_id);
           return res.status(200).json({ message: 'ok, we start again' });
         }
+        let rasaResult = parseRasa(req.body.entry[0].changes[0].value.messages[0].text.body);
+        if(rasaResult=="error"){
         await interact(
           user_id,
           {
-            type: 'intent',
-            payload: rasaToVoiceflow(parseRasa(req.body.entry[0].changes[0].value.messages[0].text.body)),
+            type: 'text',
+            payload: req.body.entry[0].changes[0].value.messages[0].text.body,
           },
           phone_number_id,
           user_name
         )
+        } else {
+          await interact(
+            user_id,
+            {
+              type: 'intent',
+              payload: rasaToVoiceflow(rasaResult),
+            },
+            phone_number_id,
+            user_name
+          )
+        }
       } else {
         if (
           req.body.entry[0].changes[0].value.messages[0].interactive.button_reply.id.includes(
@@ -532,7 +545,7 @@ function parseRasa(text) {
     .catch(function (err) {
       console.log(err)
     })
-  return "";
+  return "error";
 }
 
 app.post('/rasa/parse', function (req, res) {
