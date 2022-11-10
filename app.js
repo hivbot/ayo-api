@@ -57,8 +57,8 @@ app.post('/webhook', async (req, res) => {
         await interact(
           user_id,
           {
-            type: 'text',
-            payload: req.body.entry[0].changes[0].value.messages[0].text.body,
+            type: 'intent',
+            payload: rasaToVoiceflow(parseRasa(req.body.entry[0].changes[0].value.messages[0].text.body)),
           },
           phone_number_id,
           user_name
