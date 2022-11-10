@@ -14,6 +14,15 @@
     "VF_PROJECT_VERSION": {
       "value": "production"
     },
+    "VF_GENERAL_RUNTIME": {
+      "value": "https://general-runtime.voiceflow.com"
+    },
+    "RASA_HTTP_API": {
+      "value": "http://localhost:5005"
+    },
+    "RASA_TOKEN": {
+      "value": "rasaToken"
+    },
     "KEY": {
       "generator": "secret"
     }

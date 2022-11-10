@@ -26,7 +26,7 @@ app.listen(process.env.PORT || 3000, () => console.log('webhook is listening'))
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    info: 'WhatsApp API v1.0.2 | V⦿iceflow | 2022',
+    info: 'Ayo API',
     status: 'healthy',
     error: null,
   })
@@ -150,7 +150,7 @@ async function interact(user_id, request, phone_number_id, user_name) {
 
   await axios({
     method: 'PATCH',
-    url: `https://general-runtime.voiceflow.com/state/user/${encodeURI(
+    url: process.env.VF_GENERAL_RUNTIME + `/state/user/${encodeURI(
       user_id
     )}/variables`,
     headers: {
@@ -165,7 +165,7 @@ async function interact(user_id, request, phone_number_id, user_name) {
 
   let response = await axios({
     method: 'POST',
-    url: `https://general-runtime.voiceflow.com/state/user/${encodeURI(
+    url: process.env.VF_GENERAL_RUNTIME + `/state/user/${encodeURI(
       user_id
     )}/interact`,
     headers: {
@@ -471,7 +471,7 @@ function decrypt(data) {
 function deleteUserState(userID) {
   axios({
     method: 'DELETE',
-    url: `https://general-runtime.voiceflow.com/state/user/${encodeURI(
+    url: process.env.VF_GENERAL_RUNTIME + `/state/user/${encodeURI(
       userID
     )}`,
     headers: {
@@ -491,27 +491,50 @@ app.delete('/state/user/:userID', function (req, res) {
   res = deleteUserState(encrypt(req.params.userID));
 });
 
-function query(rasa) {
-  var voiceflow = {
-    "action": {
-      "type": "intent",
-      "payload": {
-        "query": rasa.text,
-        "intent": {
-          "name": rasa.intent.name
-        },
-        "entities": [],
-        "confidence": rasa.intent.confidence
-      }
-    }
+function rasaToVoiceflow(rasa) {
+  var voiceflowPayload = {
+    "query": rasa.text,
+    "intent": {
+      "name": rasa.intent.name
+    },
+    "entities": [],
+    "confidence": rasa.intent.confidence
   };
 
   for (const [i, entry] of rasa.entities.entries()) {
-    voiceflow.action.payload.entities[i] = {
+    voiceflowPayload.entities[i] = {
       "name": entry.entity,
       "value": entry.value
     };
   }
 
-  return voiceflow;
+  return voiceflowPayload;
 }
+
+function parseRasa(text) {
+  axios({
+    method: 'POST',
+    url: process.env.RASA_HTTP_API + `/model/parse?token=${encodeURI(
+      process.env.RASA_TOKEN
+    )}`,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    data: {
+      "text": text
+    }
+  })
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+      return response.data;
+    })
+    .catch(function (err) {
+      console.log(err)
+    })
+  return "";
+}
+
+app.post('/rasa/parse', function (req, res) {
+  res = parseRasa(res.body.text);
+});
