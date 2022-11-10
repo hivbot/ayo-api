@@ -490,3 +490,28 @@ function deleteUserState(userID) {
 app.delete('/state/user/:userID', function (req, res) {
   res = deleteUserState(encrypt(req.params.userID));
 });
+
+function query(rasa) {
+  var voiceflow = {
+    "action": {
+      "type": "intent",
+      "payload": {
+        "query": rasa.text,
+        "intent": {
+          "name": rasa.intent.name
+        },
+        "entities": [],
+        "confidence": rasa.intent.confidence
+      }
+    }
+  };
+
+  for (const [i, entry] of rasa.entities.entries()) {
+    voiceflow.action.payload.entities[i] = {
+      "name": entry.entity,
+      "value": entry.value
+    };
+  }
+
+  return voiceflow;
+}
