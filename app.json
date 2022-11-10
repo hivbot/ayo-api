@@ -1,5 +1,5 @@
 {
-  "name": "voiceflow-whatsapp",
+  "name": "ayo-api",
   "image": "heroku/nodejs",
   "env": {
     "WHATSAPP_TOKEN": {
